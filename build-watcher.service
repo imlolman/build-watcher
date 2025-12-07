@@ -1,0 +1,23 @@
+[Unit]
+Description=Build Watcher Service - Monitors and executes deployments
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/build-watcher.sh
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=build-watcher
+
+# Run as root to manage multiple user directories
+User=root
+Group=root
+
+# Security settings
+NoNewPrivileges=false
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
