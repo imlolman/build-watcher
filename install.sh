@@ -52,13 +52,17 @@ cp "$SERVICE_SOURCE" /etc/systemd/system/build-watcher.service
 echo "Reloading systemd daemon..."
 systemctl daemon-reload
 
-# Enable the service
-echo "Enabling build-watcher service..."
-systemctl enable build-watcher.service
-
-# Start the service
-echo "Starting build-watcher service..."
-systemctl start build-watcher.service
+# Check if service is already running
+if systemctl is-active --quiet build-watcher.service; then
+    echo "Service is already running. Restarting to apply updates..."
+    systemctl restart build-watcher.service
+else
+    echo "Enabling build-watcher service..."
+    systemctl enable build-watcher.service
+    
+    echo "Starting build-watcher service..."
+    systemctl start build-watcher.service
+fi
 
 # Clean up temporary files if downloaded from GitHub
 if [ "$SCRIPT_SOURCE" = "/tmp/build-watcher.sh" ]; then
@@ -67,10 +71,10 @@ fi
 
 echo ""
 echo "=========================================="
-echo "Installation Complete!"
+echo "Installation/Update Complete!"
 echo "=========================================="
 echo ""
-echo "The build-watcher service is now running."
+echo "The build-watcher service is now running with the latest version."
 echo ""
 echo "Useful commands:"
 echo "  - Check status:  sudo systemctl status build-watcher"
@@ -80,3 +84,5 @@ echo "  - Start service: sudo systemctl start build-watcher"
 echo "  - Restart:       sudo systemctl restart build-watcher"
 echo "  - Disable:       sudo systemctl disable build-watcher"
 echo ""
+
+

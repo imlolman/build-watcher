@@ -22,6 +22,13 @@ while true; do
             continue
         fi
 
+        # Check if deploy.sh is executable
+        if [ ! -x "$PROJECT_DIR/deploy.sh" ]; then
+            echo "ERROR: deploy.sh exists but is not executable at $PROJECT_DIR" >> "$LOG_FILE" 2>&1 || true
+            rm -f "$DEPLOY_FILE"
+            continue
+        fi
+
         LOG_FILE="$PROJECT_DIR/$LOG_FILE_PATH"
         LOG_DIR=$(dirname "$LOG_FILE")
         PERMISSION_DIR="$PROJECT_DIR/$PERMISSION_UPDATE_PATH"
